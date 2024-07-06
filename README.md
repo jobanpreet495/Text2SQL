@@ -27,9 +27,13 @@ First, create a new conda environment with Python 3.10:
 conda create --name name_of_environ python==3.10
 conda activate name_of_environ
 ```
+* Install requirements
+```bash
+pip install -r requirements.txt
+```
 * If ollama is not setup in your system , follow step-1 and step-2 given above.
 * Setup mysql and access the database.
-
+* Finally Run:
 ```bash
 python app.py
 ```
