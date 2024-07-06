@@ -1,0 +1,49 @@
+,Question,Ground Truth Query,Granite Response (LLM),Query Level,Match
+0,Retrieve all columns for employees with an EmployeeID less than 10.,SELECT * FROM Employees WHERE EmployeeID < 10;,SELECT * FROM Employees WHERE EmployeeID < 10;,simple,correct
+1,Retrieve the first name and salary of employees in the IT department.,"SELECT FirstName, Salary FROM Employees WHERE Department = 'IT';","SELECT `FirstName`, `Salary` FROM `Employees` WHERE `Department` = 'IT';",simple,correct
+2,Count the number of employees in each department.,"SELECT Department, COUNT(*) AS NumEmployees FROM Employees GROUP BY Department;","SELECT Department, COUNT(*) FROM Employees GROUP BY Department;",simple,correct
+3,"Retrieve employees whose salary is greater than $70,000.",SELECT * FROM Employees WHERE Salary > 70000;,SELECT * FROM Employees WHERE Salary > 70000;,simple,correct
+4,Retrieve employees sorted by last name in descending order.,SELECT * FROM Employees ORDER BY LastName DESC;,SELECT * FROM Employees ORDER BY LastName DESC;,simple,correct
+5,Calculate the average salary of employees.,SELECT AVG(Salary) AS AvgSalary FROM Employees;,SELECT AVG(`Salary`) FROM `Employees`,simple,correct
+6,"Retrieve employees birth after January 1st, 1982.",SELECT * FROM Employees WHERE HireDate > '1982-01-01';,SELECT * FROM EmployeeDetails WHERE BirthDate > '1982-01-01',simple,correct
+7,Retrieve employees with the first name starting with 'J'.,SELECT * FROM Employees WHERE FirstName LIKE 'J%';,SELECT * FROM Employees WHERE FirstName LIKE 'J%';,simple,correct
+8,Retrieve employees sorted by department and position.,"SELECT * FROM Employees ORDER BY Department, Position;","SELECT * FROM Employees ORDER BY Department, Position;",simple,correct
+9,Retrieve employees with no assigned department.,SELECT * FROM Employees WHERE Department IS NULL;,"SELECT `Employees`.`EmployeeID`, `Employees`.`FirstName`, `Employees`.`LastName` 
+FROM `Employees` 
+LEFT JOIN `EmployeeDetails` ON `Employees`.`EmployeeID` = `EmployeeDetails`.`EmployeeID`
+WHERE `EmployeeDetails`.`Department` IS NULL;",simple,correct
+10,Retrieve employees along with their detailed information (from EmployeeDetails).,"SELECT E.*, ED.BirthDate, ED.Address, ED.City, ED.State, ED.ZipCode, ED.Phone FROM Employees E JOIN EmployeeDetails ED ON E.EmployeeID = ED.EmployeeID;","SELECT * FROM Employees E 
+LEFT JOIN EmployeeDetails ED ON E.EmployeeID = ED.EmployeeID;",medium,correct
+11,Calculate the total number of employees and average salary per department.,"SELECT Department, COUNT(*) AS NumEmployees, AVG(Salary) AS AvgSalary FROM Employees GROUP BY Department;","SELECT COUNT(*), Department, AVG(Salary) FROM Employees GROUP BY Department;",medium,correct
+12,"Retrieve the employee details who live in cities that have more than one employee, along with the count of employees in those cities.","SELECT ed.City, COUNT(ed.EmployeeID) AS EmployeeCount, GROUP_CONCAT(e.FirstName, ' ', e.LastName) AS EmployeeNames FROM EmployeeDetails ed JOIN Employees e ON ed.EmployeeID = e.EmployeeID GROUP BY ed.City HAVING COUNT(ed.EmployeeID) > 1 ORDER BY EmployeeCount DESC;","SELECT City, COUNT(*) as EmployeeCount
+FROM EmployeeDetails
+GROUP BY City
+HAVING EmployeeCount > 1;",medium,wrong
+13,"Retrieve employees with salaries between $60,000 and $80,000, sorted by salary.",SELECT * FROM Employees WHERE Salary BETWEEN 60000 AND 80000 ORDER BY Salary;,SELECT * FROM Employees WHERE Salary BETWEEN 60000 AND 80000 ORDER BY Salary ASC;,medium,correct
+14,Retrieve the top 3 highest paid employees.,SELECT * FROM Employees ORDER BY Salary DESC LIMIT 3;,"SELECT `FirstName`, `LastName`, `Salary` FROM `Employees` ORDER BY `Salary` DESC LIMIT 3;",medium,correct
+15,Retrieve the department with the highest average salary.,"SELECT Department, AVG(Salary) AS AvgSalary FROM Employees GROUP BY Department ORDER BY AvgSalary DESC LIMIT 1;","SELECT Department, AVG(Salary) AS AvgSalary
+FROM Employees
+GROUP BY Department
+ORDER BY AvgSalary DESC
+LIMIT 1;",complex,correct
+16,Retrieve employees who are earning more than the average salary of their department.,"SELECT E.* FROM Employees E JOIN (SELECT Department, AVG(Salary) AS AvgSalary FROM Employees GROUP BY Department) AS AvgSalaries ON E.Department = AvgSalaries.Department WHERE E.Salary > AvgSalaries.AvgSalary;","SELECT a.* 
+FROM Employees a 
+INNER JOIN (
+    SELECT Department, AVG(Salary) AS AvgSalary 
+    FROM Employees 
+    GROUP BY Department
+) b ON a.Department = b.Department AND a.Salary > b.AvgSalary;",complex,correct
+17,Retrieve the total number of employees in each city and their average salary.,"SELECT ED.City, COUNT(*) AS NumEmployees, AVG(E.Salary) AS AvgSalary FROM Employees E JOIN EmployeeDetails ED ON E.EmployeeID = ED.EmployeeID GROUP BY ED.City;","SELECT City, COUNT(EmployeeID) AS 'Total Employees', AVG(Salary) AS 'Average Salary' FROM Employees GROUP BY City;",complex,wrong
+18,Retrieve the youngest and oldest employees' details along with their ages.,"SELECT e.FirstName, e.LastName, ed.BirthDate, TIMESTAMPDIFF(YEAR, ed.BirthDate, CURDATE()) AS Age, CASE WHEN ed.BirthDate = (SELECT MIN(BirthDate) FROM EmployeeDetails) THEN 'Oldest' WHEN ed.BirthDate = (SELECT MAX(BirthDate) FROM EmployeeDetails) THEN 'Youngest' END AS AgeCategory FROM EmployeeDetails ed JOIN Employees e ON ed.EmployeeID = e.EmployeeID WHERE ed.BirthDate = (SELECT MIN(BirthDate) FROM EmployeeDetails) OR ed.BirthDate = (SELECT MAX(BirthDate) FROM EmployeeDetails);","SELECT FirstName, LastName, (CURDATE() - BirthDate) as Age
+FROM Employees
+ORDER BY Age ASC, EmployeeID DESC
+LIMIT 2;",complex,wrong
+19,Retrieve employees who have the same last name as any other employee.,"SELECT E1.EmployeeID, E1.FirstName, E1.LastName FROM Employees E1 JOIN Employees E2 ON E1.LastName = E2.LastName AND E1.EmployeeID != E2.EmployeeID;","SELECT FirstName, LastName
+FROM Employees
+WHERE LastName IN (
+    SELECT LastName
+    FROM Employees
+    GROUP BY LastName
+    HAVING COUNT(*) > 1
+)
+ORDER BY LastName, FirstName;",complex,correct
