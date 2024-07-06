@@ -38,3 +38,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
+#### API contains two end  points
+* generate_sql :  Which is used to generate sql query given question from the user.
+* generate_answer : Which is used to generate exact answer given question from the user. 
