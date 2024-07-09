@@ -14,7 +14,7 @@ Linux system
 
 app.py is the API . It has two functionalities:
 * First , it takes user question and return SQL query
-* Second, it takes user question and return natural answer .
+* Second, it takes user question and return sql response .
 
 ### How to use it 
 ###### Setup Python Environment
@@ -40,4 +40,4 @@ python app.py
 
 #### API contains two end  points
 * generate_sql :  Which is used to generate sql query given question from the user.
-* generate_answer : Which is used to generate exact answer given question from the user. 
+* generate_response : Which is used to generate exact answer from mysql given question from the user. 
