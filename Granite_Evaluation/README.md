@@ -6,3 +6,7 @@
 * LLM generated queries , Ground-Truth (Actual queries cross checked by human) are manually run on mysql to see the generated results.
 * Out of 20 questions , 2 were wrong .
 
+
+### Evaluation_on_dataset notebook
+* Database is a single table with appr. 1018 enteries with fewer columns.
+* 20 questions are generated using chatgpt. For each question , sql  query is generated and then hit to sql for getting response back. 
